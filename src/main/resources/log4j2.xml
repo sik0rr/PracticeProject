@@ -1,0 +1,24 @@
+<Configuration status='off'>
+    <Properties>
+        <Property name='logFilePath'>resources/log.log</Property>
+    </Properties>
+    <Appenders>
+        <Console name='Console' target='SYSTEM_OUT'>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <File name='log' fileName="logs/log.log">
+            <PatternLayout>
+                <Pattern>%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.zaxxer.hikari.HikariConfig" level="debug" additivity="true">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <Root level='all'>
+            <AppenderRef ref='log'/>
+            <AppenderRef ref='Console'/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -1,0 +1,11 @@
+#DB1:
+  name: "con1"
+  url: "url1"
+  user: "user1"
+  pass: "pass1"
+---
+#DB2: 
+  name: "con2"
+  url: "url2"
+  user: "user2"
+  pass: "pass2"

@@ -1,0 +1,12 @@
+-
+#DB1:
+  name: "practice1"
+  url: "localhost"
+  user: "postgres"
+  pass: "root"
+-
+#DB2:
+  name: "practice2"
+  url: "localhost"
+  user: "postgres"
+  pass: "root"
