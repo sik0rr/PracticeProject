@@ -18,12 +18,14 @@ import java.util.*;
 
 import org.apache.logging.log4j.*;
 
+import javax.net.ssl.HostnameVerifier;
+
 public class Connection {
     private String name;
     private String url;
     private String user;
     private String pass;
-    private static Logger logger = LogManager.getLogger(Connection.class);
+    private static final Logger logger = LogManager.getLogger(Connection.class);
 
     public String getName() {
         return name;
@@ -62,25 +64,25 @@ public class Connection {
         return this.name + ", " + this.url + ", " + this.user + ", " + this.pass;
     }
 
-    public static List<Connection> yamlParse(String[] paths) {
-        Yaml yalm = new Yaml(new Constructor(Connection[].class));
-        List<Connection> connectionsList = new LinkedList<Connection>();
-        try {
-            for (String path : paths) {
-                InputStream inputStream = new FileInputStream(path);
-                Connection[] connectionsArray = yalm.load(inputStream);
-                connectionsList.addAll(Arrays.asList(connectionsArray));
-                logger.info("Парсинг файла прошел успешно: " + path);
-            }
-        } catch (FileNotFoundException e) {
-            logger.error("Файл не найден " + e.getMessage());
-            System.exit(1);
-        }
-        logger.info("Парсинг завершён");
-        return connectionsList;
-    }
+//    public static List<Connection> yamlParse(String[] paths) {
+//        Yaml yalm = new Yaml(new Constructor(Connection[].class));
+//        List<Connection> connectionsList = new LinkedList<Connection>();
+//        try {
+//            for (String path : paths) {
+//                InputStream inputStream = new FileInputStream(path);
+//                Connection[] connectionsArray = yalm.load(inputStream);
+//                connectionsList.addAll(Arrays.asList(connectionsArray));
+//                logger.info("Парсинг файла прошел успешно: " + path);
+//            }
+//        } catch (FileNotFoundException e) {
+//            logger.error("Файл не найден " + e.getMessage());
+//            System.exit(1);
+//        }
+//        logger.info("Парсинг завершён");
+//        return connectionsList;
+//    }
 
-//    public static java.sql.Connection conInit(Connection connection) {
+    //    public static java.sql.Connection conInit(Connection connection) {
 //        java.sql.Connection con = null;
 //        try {
 //            Class.forName("org.postgresql.Driver");
@@ -92,19 +94,40 @@ public class Connection {
 //        }
 //        return con;
 //    }
-    public static HikariDataSource dsInit (Connection connection) {
+    public static List<HikariDataSource> dataSourceList(List<Connection> connectionList) {
+        List<HikariDataSource> dsList = new ArrayList<>();
+        HikariDataSource dataSource;
+        for (Connection connection : connectionList) {
+            dataSource = dsInit(connection);
+            dsList.add(dataSource);
+        }
+
+        return dsList;
+    }
+
+    public static HikariDataSource dsInit(Connection connection) {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl("jdbc:postgresql://" + connection.getUrl() + "/" + connection.getName());
         config.setUsername(connection.getUser());
         config.setPassword(connection.getPass());
-        config.addDataSourceProperty( "cachePrepStmts" , "true" );
-        config.addDataSourceProperty( "prepStmtCacheSize" , "250" );
-        config.addDataSourceProperty( "prepStmtCacheSqlLimit" , "2048" );
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
         logger.info("DataSource инициализирован");
         return new HikariDataSource(config);
     }
-    public static java.sql.Connection getConnection(HikariDataSource dataSource) throws SQLException {
-        logger.info("Соединение получено");
+
+    public static List<java.sql.Connection> javaConList(List<HikariDataSource> dsList) throws SQLException {
+        List<java.sql.Connection> javaConList = new ArrayList<>();
+        for (HikariDataSource dataSource : dsList) {
+            javaConList.add(dataSource.getConnection());
+        }
+        return javaConList;
+    }
+
+    public static java.sql.Connection getConnection(List<HikariDataSource> dsList, int i) throws SQLException {
+        HikariDataSource dataSource = dsList.get(i);
+        logger.info("Соединение с БД " + dataSource.getJdbcUrl().substring(28) + " установлено");
         return dataSource.getConnection();
     }
 }
