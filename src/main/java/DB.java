@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class Table {
+public class DB {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     private static DatabaseMetaData getMetaData(java.sql.Connection connection) {
@@ -23,8 +23,8 @@ public class Table {
         DatabaseMetaData databaseMetaData = getMetaData(connection);
         ResultSet resultSet;
         Map<String, List<String>> tableColumnsMap = new HashMap<>();
-        List<String> tableColumnList = new ArrayList<>();
         for (String tableName : tableNames) {
+            List<String> tableColumnList = new ArrayList<>();
             try {
                 resultSet = databaseMetaData.getColumns(null,null,tableName,null);
                 while (resultSet.next()) {

@@ -64,36 +64,6 @@ public class Connection {
         return this.name + ", " + this.url + ", " + this.user + ", " + this.pass;
     }
 
-//    public static List<Connection> yamlParse(String[] paths) {
-//        Yaml yalm = new Yaml(new Constructor(Connection[].class));
-//        List<Connection> connectionsList = new LinkedList<Connection>();
-//        try {
-//            for (String path : paths) {
-//                InputStream inputStream = new FileInputStream(path);
-//                Connection[] connectionsArray = yalm.load(inputStream);
-//                connectionsList.addAll(Arrays.asList(connectionsArray));
-//                logger.info("Парсинг файла прошел успешно: " + path);
-//            }
-//        } catch (FileNotFoundException e) {
-//            logger.error("Файл не найден " + e.getMessage());
-//            System.exit(1);
-//        }
-//        logger.info("Парсинг завершён");
-//        return connectionsList;
-//    }
-
-    //    public static java.sql.Connection conInit(Connection connection) {
-//        java.sql.Connection con = null;
-//        try {
-//            Class.forName("org.postgresql.Driver");
-//            con = DriverManager.getConnection("jdbc:postgresql://" + connection.getUrl() + "/" + connection.getName(), connection.getUser(), connection.getPass());
-//            logger.info("База данных подключена успешно: " + connection.getName());
-//        } catch (SQLException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//            logger.error("Ошибка подключения к базе данных: " + e.getMessage());
-//        }
-//        return con;
-//    }
     public static List<HikariDataSource> dataSourceList(List<Connection> connectionList) {
         List<HikariDataSource> dsList = new ArrayList<>();
         HikariDataSource dataSource;
