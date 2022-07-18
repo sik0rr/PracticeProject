@@ -17,7 +17,7 @@ public class Main extends Thread {
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     //TODO отрефакторить код
-    //TODO добавить потоки ExecutorService пагуглить пачитать
+    //TODO добавить потоки ExecutorService погуглить почитать
     //TODO переделать парсер чтобы набивал хешмапу а не список объектов
     //TODO прописать получение конекшенов из хеш-мапы после парса
     //TODO
@@ -41,7 +41,7 @@ public class Main extends Thread {
         java.sql.Connection con2 = Connection.getConnection(dsList, 1);
         //System.out.println(String.join("\n", getTableContent(con1, tableStructure)));
         replicate(con1, con2, tableStructure);
-        //testJmx(javaConList);
+        testJmx(javaConList);
     }
 
     public static List<String> getTableContent(java.sql.Connection connection, Map<String, List<String>> tableStructure) {
@@ -88,7 +88,7 @@ public class Main extends Thread {
             server.registerMBean(new TableInfo(connections), objectName);
         } catch (MalformedObjectNameException | InstanceAlreadyExistsException |
                 MBeanRegistrationException | NotCompliantMBeanException e) {
-            // handle exceptions
+            logger.error("Ошибка JMX: " +e.getMessage());
         }
         while (true) {
         }
